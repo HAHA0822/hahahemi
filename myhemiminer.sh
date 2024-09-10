@@ -130,9 +130,16 @@ download_and_setup() {
 setup_environment() {
     cd "$HOME/heminetwork"
     cat ~/popm-address.json
+    local threshold=100  # 定义阈值
 
     current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
-    optimal_fee=$(($current_fee + 5))
+
+    if [ "$current_fee" -le "$threshold" ]; then
+            # 更新环境变量
+            optimal_fee=$(($current_fee + 1))
+    else
+            optimal_fee=$(($threshold))
+    fi
 
     # 定义fee
     export POPM_STATIC_FEE=$optimal_fee
