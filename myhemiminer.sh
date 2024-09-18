@@ -82,7 +82,7 @@ install_pm2() {
 
 # 后台实时更新 POPM_STATIC_FEE 的函数
 update_fee_in_background() {
-    local threshold=100  # 定义阈值，当 optimal_fee 超过该值时不再更新
+    local threshold=500  # 定义阈值，当 optimal_fee 超过该值时不再更新
 
     while true; do
         export POPM_STATIC_FEE=${POPM_STATIC_FEE:-1}  # 确保环境变量可用
@@ -90,7 +90,7 @@ update_fee_in_background() {
 
         # 获取最新的 fastestFee
         current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
-        optimal_fee=$(($current_fee + 5))
+        optimal_fee=$(($current_fee + 10))
 
         # 检查 optimal_fee 是否超过阈值
         if [ "$optimal_fee" -le "$threshold" ]; then
@@ -130,13 +130,13 @@ download_and_setup() {
 setup_environment() {
     cd "$HOME/heminetwork"
     cat ~/popm-address.json
-    local threshold=100  # 定义阈值
+    local threshold=500  # 定义阈值
 
     current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
 
     if [ "$current_fee" -le "$threshold" ]; then
             # 更新环境变量
-            optimal_fee=$(($current_fee + 1))
+            optimal_fee=$(($current_fee + 10))
     else
             optimal_fee=$(($threshold))
     fi
@@ -177,6 +177,18 @@ view_logs() {
     pm2 logs popmd
 }
 
+# 功能6：升级版本命令
+upgrade_and_setup() {
+    wget https://github.com/hemilabs/heminetwork/releases/download/v0.4.3/heminetwork_v0.4.3_linux_amd64.tar.gz
+
+    # 创建目标文件夹 (如果不存在)
+    TARGET_DIR="$HOME/heminetwork"
+    mkdir -p "$TARGET_DIR"
+
+    # 解压文件到目标文件夹
+    tar -xvf heminetwork_v0.4.3_linux_amd64.tar.gz -C "$TARGET_DIR"
+}
+
 # 主菜单
 main_menu() {
     while true; do
@@ -189,7 +201,8 @@ main_menu() {
         echo "3. 启动 popmd / Start popmd"
         echo "4. 备份地址信息 / Backup address information"
         echo "5. 查看日志 / View logs"
-        echo "6. 退出 / Exit"
+        echo "6. 升级版本 / Upgrade"
+        echo "7. 退出 / Exit"
 
         read -p "请输入选项 (1-6): / Enter your choice (1-6): " choice
 
@@ -210,6 +223,9 @@ main_menu() {
                 view_logs
                 ;;
             6)
+                upgrade_and_setup
+                ;;
+            7)
                 echo "退出脚本。/ Exiting the script."
                 exit 0
                 ;;
