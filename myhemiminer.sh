@@ -82,7 +82,7 @@ install_pm2() {
 
 # 后台实时更新 POPM_STATIC_FEE 的函数
 update_fee_in_background() {
-    local threshold=500  # 定义阈值，当 optimal_fee 超过该值时不再更新
+    local threshold=300  # 定义阈值，当 optimal_fee 超过该值时不再更新
 
     while true; do
         export POPM_STATIC_FEE=${POPM_STATIC_FEE:-1}  # 确保环境变量可用
@@ -90,7 +90,7 @@ update_fee_in_background() {
 
         # 获取最新的 fastestFee
         current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
-        optimal_fee=$(($current_fee + 10))
+        optimal_fee=$(($current_fee + 5))
 
         # 检查 optimal_fee 是否超过阈值
         if [ "$optimal_fee" -le "$threshold" ]; then
@@ -130,13 +130,13 @@ download_and_setup() {
 setup_environment() {
     cd "$HOME/heminetwork"
     cat ~/popm-address.json
-    local threshold=500  # 定义阈值
+    local threshold=300  # 定义阈值
 
     current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
 
     if [ "$current_fee" -le "$threshold" ]; then
             # 更新环境变量
-            optimal_fee=$(($current_fee + 10))
+            optimal_fee=$(($current_fee + 5))
     else
             optimal_fee=$(($threshold))
     fi
