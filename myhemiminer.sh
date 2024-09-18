@@ -88,21 +88,16 @@ update_fee_in_background() {
         export POPM_STATIC_FEE=${POPM_STATIC_FEE:-1}  # 确保环境变量可用
         echo "当前费率为 $POPM_STATIC_FEE"
 
-        # 获取最新的 fastestFee
-        fastest_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
-        half_hour_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .halfHourFee)
-
-        #进行算术运算
-        average_fee=$(( (fastest_fee + half_hour_fee) / 2 ))
-
-        # current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
+        current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
         # current_fee = $average_fee
-        optimal_fee=$(($average_fee + 5))
+        optimal_fee=$(($current_fee + 3))
 
         # 检查 optimal_fee 是否超过阈值
         if [ "$optimal_fee" -le "$threshold" ]; then
             # 更新环境变量
             export POPM_STATIC_FEE=$optimal_fee
+        else
+            optimal_fee=$(($threshold))
         fi
 
         echo "当前最佳费率为 $optimal_fee sats/vB / Optimal fee is $optimal_fee sats/vB"
@@ -139,17 +134,11 @@ setup_environment() {
     cat ~/popm-address.json
     local threshold=300  # 定义阈值
 
-    # current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
-    # 获取最新的 fastestFee
-    fastest_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
-    half_hour_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .halfHourFee)
+    current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
 
-    #进行算术运算
-    average_fee=$(( (fastest_fee + half_hour_fee) / 2 ))
-
-    if [ "$average_fee" -le "$threshold" ]; then
+    if [ "$current_fee" -le "$threshold" ]; then
             # 更新环境变量
-            optimal_fee=$(($average_fee + 5))
+            optimal_fee=$(($current_fee + 3))
     else
             optimal_fee=$(($threshold))
     fi
