@@ -111,14 +111,14 @@ install_pm2
 
 # 功能1：下载、解压缩并运行帮助命令
 download_and_setup() {
-    wget https://github.com/hemilabs/heminetwork/releases/download/v0.3.2/heminetwork_v0.3.2_linux_amd64.tar.gz
+    wget https://github.com/hemilabs/heminetwork/releases/download/v0.4.3/heminetwork_v0.4.3_linux_amd64.tar.gz
 
     # 创建目标文件夹 (如果不存在)
     TARGET_DIR="$HOME/heminetwork"
     mkdir -p "$TARGET_DIR"
 
     # 解压文件到目标文件夹
-    tar -xvf heminetwork_v0.3.2_linux_amd64.tar.gz -C "$TARGET_DIR"
+    tar -xvf heminetwork_v0.4.3_linux_amd64.tar.gz -C "$TARGET_DIR"
 
     # 切换到目标文件夹
     cd "$TARGET_DIR"
