@@ -82,7 +82,8 @@ install_pm2() {
 
 # 后台实时更新 POPM_STATIC_FEE 的函数
 update_fee_in_background() {
-    local threshold=300  # 定义阈值，当 optimal_fee 超过该值时不再更新
+    local log_file="$HOME/heminetwork/update_fee.log"
+    local threshold=350  # 定义阈值，当 optimal_fee 超过该值时不再更新
 
     while true; do
         export POPM_STATIC_FEE=${POPM_STATIC_FEE:-1}  # 确保环境变量可用
@@ -90,7 +91,7 @@ update_fee_in_background() {
 
         current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
         # current_fee = $average_fee
-        optimal_fee=$(($current_fee + 3))
+        optimal_fee=$(($current_fee + 5))
 
         # 检查 optimal_fee 是否超过阈值
         if [ "$optimal_fee" -le "$threshold" ]; then
@@ -100,7 +101,7 @@ update_fee_in_background() {
             optimal_fee=$(($threshold))
         fi
 
-        echo "当前最佳费率为 $optimal_fee sats/vB / Optimal fee is $optimal_fee sats/vB"
+        printf "当前最佳费率为 %s sats/vB\n" "$optimal_fee" >> "$log_file"
         # 每隔 60 秒更新一次
         sleep 60
     done
@@ -132,13 +133,13 @@ download_and_setup() {
 setup_environment() {
     cd "$HOME/heminetwork"
     cat ~/popm-address.json
-    local threshold=300  # 定义阈值
+    local threshold=350  # 定义阈值
 
     current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
 
     if [ "$current_fee" -le "$threshold" ]; then
             # 更新环境变量
-            optimal_fee=$(($current_fee + 3))
+            optimal_fee=$(($current_fee + 5))
     else
             optimal_fee=$(($threshold))
     fi
@@ -176,7 +177,8 @@ backup_address() {
 # 功能5：查看日志
 view_logs() {
     cd "$HOME/heminetwork"
-    pm2 logs popmd
+    tail -n 50 -f ~/update_fee.log
+
 }
 
 # 功能6：升级版本命令
@@ -189,6 +191,12 @@ upgrade_and_setup() {
 
     # 解压文件到目标文件夹
     tar -xvf heminetwork_v0.4.3_linux_amd64.tar.gz -C "$TARGET_DIR"
+}
+
+# 功能7：查看gas日志
+view_logs() {
+    cd "$HOME/heminetwork"
+    pm2 logs popmd
 }
 
 # 主菜单
