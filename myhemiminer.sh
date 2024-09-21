@@ -89,9 +89,9 @@ update_fee_in_background() {
         export POPM_STATIC_FEE=${POPM_STATIC_FEE:-1}  # 确保环境变量可用
         printf "当前费率为 $POPM_STATIC_FEE\n" >> "$log_file"
 
-        current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .economyFee)
+        current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
         # current_fee = $average_fee
-        optimal_fee=$(($current_fee + 10))
+        optimal_fee=$(($current_fee + 5))
 
         # 检查 optimal_fee 是否超过阈值
         if [ "$optimal_fee" -le "$threshold" ]; then
@@ -135,11 +135,11 @@ setup_environment() {
     cat ~/popm-address.json
     local threshold=300  # 定义阈值
 
-    current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .economyFee)
+    current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
 
     if [ "$current_fee" -le "$threshold" ]; then
             # 更新环境变量
-            optimal_fee=$(($current_fee + 10))
+            optimal_fee=$(($current_fee + 5))
     else
             optimal_fee=$(($threshold))
     fi
