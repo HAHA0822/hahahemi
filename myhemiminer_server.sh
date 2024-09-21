@@ -101,9 +101,10 @@ update_fee_in_background() {
                 while true; do
                     # 监听请求并处理
                     nc -u -l -p 53355 | while read request; do
-                        if [[ "$request" == "GET_FEE" ]]; then
+                        if [[ "$client_request" == GET_FEE:* ]]; then
                             # 返回费率数据
-                            echo "$current_fee"
+                            CLIENT_IP=$(echo "$client_request" | cut -d ':' -f 2)
+                            echo "$current_fee" | nc -u -w1 $CLIENT_IP 53355
                         fi
                     done
                 done 
