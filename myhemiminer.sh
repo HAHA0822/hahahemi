@@ -87,7 +87,6 @@ update_fee_in_background() {
 
     while true; do
         export POPM_STATIC_FEE=${POPM_STATIC_FEE:-1}  # 确保环境变量可用
-        printf "$timestamp\n" >> "$log_file"
         printf "当前费率为 $POPM_STATIC_FEE\n" >> "$log_file"
 
         current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
