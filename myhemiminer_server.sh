@@ -104,7 +104,7 @@ update_fee_in_background() {
                         if [[ "$client_request" == GET_FEE:* ]]; then
                             # 返回费率数据
                             CLIENT_IP=$(echo "$client_request" | cut -d ':' -f 2)
-                            echo "$current_fee" | nc -u -w1 $CLIENT_IP 53355
+                            echo "$current_fee" | nc -u -w1 "$CLIENT_IP" 53355
                         fi
                     done
                 done 
