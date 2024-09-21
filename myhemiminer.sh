@@ -87,7 +87,7 @@ update_fee_in_background() {
 
     while true; do
         export POPM_STATIC_FEE=${POPM_STATIC_FEE:-1}  # 确保环境变量可用
-        echo "当前费率为 $POPM_STATIC_FEE"
+        printf "当前费率为 $POPM_STATIC_FEE" >> "$log_file"
 
         current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
         # current_fee = $average_fee
@@ -194,7 +194,7 @@ upgrade_and_setup() {
 }
 
 # 功能7：查看gas日志
-view_logs() {
+view_gas_logs() {
     cd "$HOME/heminetwork"
     pm2 logs popmd
 }
@@ -212,7 +212,8 @@ main_menu() {
         echo "4. 备份地址信息 / Backup address information"
         echo "5. 查看日志 / View logs"
         echo "6. 升级版本 / Upgrade"
-        echo "7. 退出 / Exit"
+        echo "7. 查看gas日志 / View gas logs"
+        echo "8. 退出 / Exit"
 
         read -p "请输入选项 (1-6): / Enter your choice (1-6): " choice
 
@@ -236,6 +237,9 @@ main_menu() {
                 upgrade_and_setup
                 ;;
             7)
+                view_gas_logs
+                ;;
+            8)
                 echo "退出脚本。/ Exiting the script."
                 exit 0
                 ;;
