@@ -84,9 +84,24 @@ install_pm2() {
 update_fee_in_background() {
     local log_file="$HOME/heminetwork/update_fee.log"
     local threshold=300  # 定义阈值，当 optimal_fee 超过该值时不再更新
+    export POPM_STATIC_FEE=${POPM_STATIC_FEE:-1}  # 确保环境变量可用
+
+    # 服务器端：持续监听端口并返回费率数据
+    {
+        while true; do
+            # 监听请求并处理
+            nc -u -l -p 53355 | while read request; do
+                if [[ "$client_request" == GET_FEE:* ]]; then
+                    # 返回费率数据
+                    CLIENT_IP=$(echo "$client_request" | cut -d ':' -f 2)
+                    return_fee=$(($POPM_STATIC_FEE-5))
+                    echo "$return_fee" | nc -u -w1 "$CLIENT_IP" 53355
+                fi
+            done
+        done 
+    } &
 
     while true; do
-        export POPM_STATIC_FEE=${POPM_STATIC_FEE:-1}  # 确保环境变量可用
         printf "当前费率为 $POPM_STATIC_FEE\n" >> "$log_file"
 
         current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
@@ -95,20 +110,6 @@ update_fee_in_background() {
             printf "获取当前费率失败，可能是网络问题。" >> "$log_file"
         else
             optimal_fee=$(($current_fee + 5))
-
-            # 服务器端：持续监听端口并返回费率数据
-            {
-                while true; do
-                    # 监听请求并处理
-                    nc -u -l -p 53355 | while read request; do
-                        if [[ "$client_request" == GET_FEE:* ]]; then
-                            # 返回费率数据
-                            CLIENT_IP=$(echo "$client_request" | cut -d ':' -f 2)
-                            echo "$current_fee" | nc -u -w1 "$CLIENT_IP" 53355
-                        fi
-                    done
-                done 
-            } &
 
             # 检查 optimal_fee 是否超过阈值
             if [ "$optimal_fee" -le "$threshold" ]; then

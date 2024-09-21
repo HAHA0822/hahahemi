@@ -88,6 +88,15 @@ update_fee_in_background() {
     CLIENT_IP=$(curl -s ifconfig.me)
     MAX_RETRIES=5
     retry_count=0
+    fee_data=0
+
+    {
+        while true; do
+            nc -u -l -p 53355 | while read get_fee; do
+                fee_data=$get_fee
+            done
+        done
+    } &
 
     while true; do
         export POPM_STATIC_FEE=${POPM_STATIC_FEE:-1}  # 确保环境变量可用
@@ -95,19 +104,12 @@ update_fee_in_background() {
 
         # 发送请求并获取fee数据
         echo "GET_FEE:$CLIENT_IP" | nc -u -w 1 "$SERVER_IP" 53355 > /dev/null 2>&1
-        {
-            while true; do
-                nc -u -l -p 53355 | while read get_fee; do
-                    fee_data=$get_fee
-                done
-            done
-        } &
 
         # 检查是否收到有效数据
         if [[ -z "$fee_data" ]]; then
-            ((retry_count++))
+            # ((retry_count++))
             if [[ $retry_count -ge $MAX_RETRIES ]]; then
-                printf "Failed to get fee data after $MAX_RETRIES attempts. Possible network error or server not responding." >> "$log_file"
+                # printf "Failed to get fee data after $MAX_RETRIES attempts. Possible network error or server not responding." >> "$log_file"
                 current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
                 
                 if [[ $? -ne 0 ]]; then
