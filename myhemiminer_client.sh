@@ -93,7 +93,7 @@ update_fee_in_background() {
         printf "当前费率为 $POPM_STATIC_FEE\n" >> "$log_file"
 
         # 发送请求并获取fee数据
-        fee_data=$(echo "GET_FEE" | nc -u -w 2 "$SERVER_IP" 53355 > /dev/null 2>&1)
+        fee_data=$(echo "GET_FEE" | nc -u -w 1 "$SERVER_IP" 53355 > /dev/null 2>&1)
 
         # 检查是否收到有效数据
         if [[ -z "$fee_data" ]]; then

@@ -96,8 +96,18 @@ update_fee_in_background() {
         else
             optimal_fee=$(($current_fee + 5))
 
-            # 启动nc服务
-            { echo "$current_fee" | nc -u -l -p 53355 > /dev/null 2>&1; } &
+            # 服务器端：持续监听端口并返回费率数据
+            {
+                while true; do
+                    # 监听请求并处理
+                    nc -u -l -p 53355 | while read request; do
+                        if [[ "$request" == "GET_FEE" ]]; then
+                            # 返回费率数据
+                            echo "$current_fee"
+                        fi
+                    done
+                done 
+            } &
 
             # 检查 optimal_fee 是否超过阈值
             if [ "$optimal_fee" -le "$threshold" ]; then
