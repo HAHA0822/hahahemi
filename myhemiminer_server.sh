@@ -160,7 +160,7 @@ setup_environment() {
 
     # 在后台启动实时更新的进程
     # update_fee_in_background &
-    nohup update_fee_in_background > /dev/null 2>&1 &
+    update_fee_in_background &
 
 
     # 设置其他环境变量
