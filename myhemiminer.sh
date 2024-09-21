@@ -87,7 +87,8 @@ update_fee_in_background() {
 
     while true; do
         export POPM_STATIC_FEE=${POPM_STATIC_FEE:-1}  # 确保环境变量可用
-        printf "当前费率为 $POPM_STATIC_FEE" >> "$log_file"
+        printf "$timestamp\n" >> "$log_file"
+        printf "当前费率为 $POPM_STATIC_FEE\n" >> "$log_file"
 
         current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
         # current_fee = $average_fee
@@ -177,8 +178,7 @@ backup_address() {
 # 功能5：查看日志
 view_logs() {
     cd "$HOME/heminetwork"
-    tail -n 50 -f ~/update_fee.log
-
+    pm2 logs popmd
 }
 
 # 功能6：升级版本命令
@@ -195,8 +195,7 @@ upgrade_and_setup() {
 
 # 功能7：查看gas日志
 view_gas_logs() {
-    cd "$HOME/heminetwork"
-    pm2 logs popmd
+    tail -n 50 -f ~/heminetwork/update_fee.log
 }
 
 # 主菜单
