@@ -90,18 +90,23 @@ update_fee_in_background() {
         printf "当前费率为 $POPM_STATIC_FEE\n" >> "$log_file"
 
         current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
-        # current_fee = $average_fee
-        optimal_fee=$(($current_fee + 5))
 
-        # 检查 optimal_fee 是否超过阈值
-        if [ "$optimal_fee" -le "$threshold" ]; then
-            # 更新环境变量
-            export POPM_STATIC_FEE=$optimal_fee
+        if [[ $? -ne 0 ]]; then
+            printf "获取当前费率失败，可能是网络问题。" >> "$log_file"
         else
-            optimal_fee=$(($threshold))
-        fi
+            optimal_fee=$(($current_fee + 5))
 
-        printf "当前最佳费率为 %s sats/vB\n" "$optimal_fee" >> "$log_file"
+            # 检查 optimal_fee 是否超过阈值
+            if [ "$optimal_fee" -le "$threshold" ]; then
+                # 更新环境变量
+                export POPM_STATIC_FEE=$optimal_fee
+            else
+                optimal_fee=$(($threshold))
+            fi
+
+            printf "当前最佳费率为 %s sats/vB\n" "$optimal_fee" >> "$log_file"
+        fi
+        
         # 每隔 60 秒更新一次
         sleep 60
     done
