@@ -89,7 +89,8 @@ update_fee_in_background() {
         export POPM_STATIC_FEE=${POPM_STATIC_FEE:-1}  # 确保环境变量可用
         printf "当前费率为 $POPM_STATIC_FEE\n" >> "$log_file"
 
-        current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
+        # current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
+        current_fee = 215
 
         if [[ $? -ne 0 ]]; then
             printf "获取当前费率失败，可能是网络问题。" >> "$log_file"
@@ -140,7 +141,8 @@ setup_environment() {
     cat ~/popm-address.json
     local threshold=300  # 定义阈值
 
-    current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
+    # current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
+    current_fee = 215
 
     if [ "$current_fee" -le "$threshold" ]; then
             # 更新环境变量
@@ -156,7 +158,9 @@ setup_environment() {
     read -p "请输入 private_key 值 / Enter the private_key value: " POPM_BTC_PRIVKEY
 
     # 在后台启动实时更新的进程
-    update_fee_in_background &
+    # update_fee_in_background &
+    nohup update_fee_in_background > /dev/null 2>&1 &
+
 
     # 设置其他环境变量
     export POPM_BTC_PRIVKEY=$POPM_BTC_PRIVKEY
