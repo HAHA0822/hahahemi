@@ -90,7 +90,7 @@ update_fee_in_background() {
         printf "当前费率为 $POPM_STATIC_FEE\n" >> "$log_file"
 
         # current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
-        current_fee = 215
+        current_fee=215
 
         if [[ $? -ne 0 ]]; then
             printf "获取当前费率失败，可能是网络问题。" >> "$log_file"
@@ -142,7 +142,7 @@ setup_environment() {
     local threshold=300  # 定义阈值
 
     # current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
-    current_fee = $(215)
+    current_fee=215
 
     if [ "$current_fee" -le "$threshold" ]; then
             # 更新环境变量
