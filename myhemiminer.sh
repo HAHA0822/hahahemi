@@ -139,10 +139,10 @@ download_and_setup() {
 setup_environment() {
     cd "$HOME/heminetwork"
     cat ~/popm-address.json
-    local threshold=400  # 定义阈值
+    local threshold=600  # 定义阈值
 
     # current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
-    local current_fee=305
+    local current_fee=565
 
     if [ "$current_fee" -le "$threshold" ]; then
             # 更新环境变量
@@ -210,8 +210,10 @@ view_gas_logs() {
 main_menu() {
     while true; do
         clear
-        echo "=======================创建自 https://x.com/ccaannddyy11 来自社区 https://t.me/niuwuriji======================="
-        echo "=======================Created by https://x.com/ccaannddyy11 from the community https://t.me/niuwuriji======================="
+        echo "=============================================="
+        echo "=============================================="
+        echo "=============================================="
+        echo "=============================================="
         echo "请选择一个选项: / Please select an option:"
         echo "1. 下载并设置 Heminetwork / Download and setup Heminetwork"
         echo "2. 输入 private_key 和 sats/vB / Input private_key and sats/vB"
@@ -221,6 +223,8 @@ main_menu() {
         echo "6. 升级版本 / Upgrade"
         echo "7. 查看gas日志 / View gas logs"
         echo "8. 退出 / Exit"
+        echo "=============================================="
+        echo "=============================================="
 
         read -p "请输入选项 (1-6): / Enter your choice (1-6): " choice
 
