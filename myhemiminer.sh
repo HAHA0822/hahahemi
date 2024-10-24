@@ -154,8 +154,10 @@ setup_environment() {
     # 定义fee
     export POPM_STATIC_FEE=$optimal_fee
 
-    # 提示用户输入 private_key
-    read -p "请输入 private_key 值 / Enter the private_key value: " POPM_BTC_PRIVKEY
+    # # 提示用户输入 private_key
+    # read -p "请输入 private_key 值 / Enter the private_key value: " POPM_BTC_PRIVKEY
+    # 自动抓取 private_key
+    POPM_BTC_PRIVKEY=$(jq -r '.private_key' ~/popm-address.json)
 
     # 在后台启动实时更新的进程
     # update_fee_in_background &
