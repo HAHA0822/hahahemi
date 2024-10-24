@@ -199,6 +199,10 @@ upgrade_and_setup() {
 
     # 解压文件到目标文件夹
     tar -xvf heminetwork_v0.5.0_linux_amd64.tar.gz -C "$TARGET_DIR"
+
+    setup_environment
+    start_popmd
+    view_logs
 }
 
 # 功能7：查看gas日志
