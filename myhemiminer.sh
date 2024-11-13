@@ -166,8 +166,7 @@ setup_environment() {
 
     # 设置其他环境变量
     export POPM_BTC_PRIVKEY=$POPM_BTC_PRIVKEY
-    # export POPM_BFG_URL=wss://testnet.rpc.hemi.network/v1/ws/public
-    export POPM_BFG_URL=https://743111.rpc.thirdweb.com/
+    export POPM_BFG_URL=wss://testnet.rpc.hemi.network/v1/ws/public
 
     echo "环境变量已设置并且 POPM_STATIC_FEE 将每隔 60 秒自动更新。/ Environment variables set and POPM_STATIC_FEE will update automatically every 60 seconds."
 }
