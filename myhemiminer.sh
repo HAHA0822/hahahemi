@@ -142,11 +142,11 @@ setup_environment() {
     local threshold=2000  # 定义阈值
 
     # current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
-    local current_fee=600
+    local current_fee=988
 
     if [ "$current_fee" -le "$threshold" ]; then
             # 更新环境变量
-            random_number=$(shuf -i 1-50 -n 1)
+            random_number=$(shuf -i 8-68 -n 1)
             optimal_fee=$(($current_fee + $random_number))
     else
             optimal_fee=$(($threshold))
