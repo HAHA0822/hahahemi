@@ -120,14 +120,14 @@ install_pm2
 
 # 功能1：下载、解压缩并运行帮助命令
 download_and_setup() {
-    wget https://github.com/hemilabs/heminetwork/releases/download/v0.10.0/heminetwork_v0.10.0_linux_amd64.tar.gz
+    wget https://github.com/hemilabs/heminetwork/releases/download/v0.11.1/heminetwork_v0.11.1_linux_amd64.tar.gz
 
     # 创建目标文件夹 (如果不存在)
     TARGET_DIR="$HOME/heminetwork"
     mkdir -p "$TARGET_DIR"
 
     # 解压文件到目标文件夹
-    tar -xvf heminetwork_v0.10.0_linux_amd64.tar.gz -C "$TARGET_DIR"
+    tar -xvf heminetwork_v0.11.1_linux_amd64.tar.gz -C "$TARGET_DIR"
 
     # 切换到目标文件夹
     cd "$TARGET_DIR"
@@ -142,7 +142,7 @@ setup_environment() {
     local threshold=2000  # 定义阈值
 
     # current_fee=$(curl -s https://mempool.space/testnet/api/v1/fees/recommended | jq .fastestFee)
-    local current_fee=418
+    local current_fee=658
 
     if [ "$current_fee" -le "$threshold" ]; then
             # 更新环境变量
@@ -194,14 +194,14 @@ view_logs() {
 
 # 功能6：升级版本命令
 upgrade_and_setup() {
-    wget https://github.com/hemilabs/heminetwork/releases/download/v0.10.0/heminetwork_v0.10.0_linux_amd64.tar.gz
+    wget https://github.com/hemilabs/heminetwork/releases/download/v0.11.1/heminetwork_v0.11.1_linux_amd64.tar.gz
 
     # 创建目标文件夹 (如果不存在)
     TARGET_DIR="$HOME/heminetwork"
     mkdir -p "$TARGET_DIR"
 
     # 解压文件到目标文件夹
-    tar -xvf heminetwork_v0.10.0_linux_amd64.tar.gz -C "$TARGET_DIR"
+    tar -xvf heminetwork_v0.11.1_linux_amd64.tar.gz -C "$TARGET_DIR"
 
     setup_environment
     start_popmd
